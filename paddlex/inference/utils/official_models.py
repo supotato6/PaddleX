@@ -315,6 +315,9 @@ ALL_MODELS = [
     "th_PP-OCRv5_mobile_rec",
     "el_PP-OCRv5_mobile_rec",
     "en_PP-OCRv5_mobile_rec",
+    "G2PWModel",
+    "fastspeech2_csmsc",
+    "pwgan_csmsc",
 ]
 
 
@@ -431,9 +434,13 @@ class _BosModelHoster(_BaseModelHoster):
     alias = "bos"
     healthcheck_url = "https://paddle-model-ecology.bj.bcebos.com"
 
-    version = "paddle3.0.0"
+    # version = "paddle3.0.0"
+    # base_url = (
+    #     "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model"
+    # )
+    version = "paddle3.0rc0"
     base_url = (
-        "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model"
+        "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/"
     )
     special_model_fn = {
         "whisper_large": "whisper_large.tar",
@@ -447,7 +454,8 @@ class _BosModelHoster(_BaseModelHoster):
         if model_name in self.special_model_fn:
             fn = self.special_model_fn[model_name]
         else:
-            fn = f"{model_name}_infer.tar"
+            # fn = f"{model_name}_infer.tar"
+            fn = f"{model_name}.tar"
         url = f"{self.base_url}/{self.version}/{fn}"
         download_and_extract(url, save_dir.parent, model_name, overwrite=False)
 

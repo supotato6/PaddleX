@@ -1,4 +1,4 @@
-# Copyright (c) 2024 PaddlePaddle Authors. All Rights Reserved.
+# copyright (c) 2024 PaddlePaddle Authors. All Rights Reserve.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,15 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pathlib import Path
-import numpy as np
 from ....utils import logging
-from ....utils.cache import CACHE_DIR
-from ....utils.download import download
 from .base_batch_sampler import BaseBatchSampler
 
 
-class AudioBatchSampler(BaseBatchSampler):
+class TextBatchSampler(BaseBatchSampler):
     def __init__(self):
         """Initializes the BaseBatchSampler.
 
@@ -29,20 +25,6 @@ class AudioBatchSampler(BaseBatchSampler):
         """
         super().__init__()
         self.batch_size = 1
-
-    def _download_from_url(self, in_path):
-        """Download a file from a URL to a cache directory.
-
-        Args:
-            in_path (str): URL of the file to be downloaded.
-
-        Returns:
-            str: Path to the downloaded file.
-        """
-        file_name = Path(in_path).name
-        save_path = Path(CACHE_DIR) / "predict_input" / file_name
-        download(in_path, save_path, overwrite=True)
-        return save_path.as_posix()
 
     def sample(self, inputs):
         """Generate list of input file path.
@@ -54,14 +36,10 @@ class AudioBatchSampler(BaseBatchSampler):
             list: list of file path.
         """
         if isinstance(inputs, str):
-            if inputs.startswith("http"):
-                inputs = self._download_from_url(inputs)
             yield [inputs]
-        elif isinstance(inputs, list) or isinstance(inputs, np.ndarray):
-            yield inputs
         else:
-            raise TypeError(
-                f"Not supported input data type! Only `str` are supported, but got: {type(inputs)}."
+            logging.warning(
+                f"Not supported input data type! Only `str` are supported, but got: {input}."
             )
 
     @BaseBatchSampler.batch_size.setter
